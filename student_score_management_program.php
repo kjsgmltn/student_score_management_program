@@ -3,19 +3,18 @@
 <head> 
 <title> new document </title>
 
-
 <script language="javascript">
  var count = 1;
  var addCount;
 
  var checkbox_Name = 'CHECK';
- var Student_NUMBER = 'ST_NUMBER';
- var Student_NAME = 'ST_NAME';
- var Student_LANG = 'ST_LANG_SCORE';
- var Student_ENG = 'ST_ENG_SCORE';
- var Student_SCIEN = 'ST_SCIEN_SCORE';
- var Student_SOCIE = 'ST_SOCIE_SCORE';
- var Student_CLASS = 'ST_CLAS_NAME'; 
+ var Student_NUMBER = 'ST_NUMBER[]';
+ var Student_NAME = 'ST_NAME[]';
+ var Student_LANG = 'ST_LANG_SCORE[]';
+ var Student_ENG = 'ST_ENG_SCORE[]';
+ var Student_SCIEN = 'ST_SCIEN_SCORE[]';
+ var Student_SOCIE = 'ST_SOCIE_SCORE[]';
+ var Student_CLASS = 'ST_CLAS_NAME[]'; 
  
 //행추가
 function addInputBox() {
@@ -23,7 +22,6 @@ function addInputBox() {
 		if(!document.getElementsByName("number")[i]) { 
 			addCount = i;
 			var table_Str = '<tr><td><input type="checkbox"name='+checkbox_Name+' value = '+addCount+'></td><td><input type="text" name='+Student_NUMBER+' size="10" maxlength="10"></td><td><input type="text" name='+Student_NAME+' size="10" maxlength="10"></td><td><input type="text" name='+Student_LANG+' size="3" maxlength="3"></td><td><input type="text" name='+Student_ENG+' size="3" maxlength="3"></td><td><input type="text" name='+Student_SCIEN+' size="3" maxlength="3"></td><td><input type="text" name='+Student_SOCIE+' size="3" maxlength="3"></td><td><select name='+Student_CLASS+' size="1"><option value="A">A반</option><option value="B">B반</option><option value="C">C반</option><option value="D">D반</option><option value="E">E반</option><option value="F">F반</option><option value="G">G반</option></select></td></tr>';
-
 			var table = document.getElementById("dynamic_table");
 			var newRow = table.insertRow();
 			newRow.innerHTML = table_Str;
@@ -42,23 +40,22 @@ function subtractInputBox() {
 		var flag = 0;
 		if(rows > 1){
 			for(var i = 1; i < document.gForm.CHECK.length; i++){
-				if(document.gForm.CHECK[i].checked == true){
-					table.deleteRow(i);
+			 	if(document.gForm.CHECK[i].checked == true){
+					table.deleteRow(i+1);
 					i--;
 					count--;
 					chk++;
 				}
 			}
-			if(chk < 0){
+			if(chk <= 0){
 				alert("삭제할 행 선택하세여");
-			}
-			else{				
-				alert("삭제되었습니다.");
 			}
 		}
 }
 
-
+function showtable(){
+	var show_table = document.getElementById("show_table");
+}
 </script>
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -147,13 +144,10 @@ function subtractInputBox() {
     </table>
 -->
     
-         <div id="header">프로그램 소개 </div>
-         <div id="header_2"    -nload="addInputBox()" >
+        <div id="header">프로그램 소개 </div>
+        <div id="header_2">
 		 입력란
-		 
-		 
-		<form name="gForm" action="http://localhost/new1.php" method="post">
-			<input type="hidden" name="count">
+		<form name="gForm" action="student_score_management_program.php" method="post">
 			<table id="dynamic_table" border="1" size = "530">
 				<tbody>
 					<tr>
@@ -167,66 +161,109 @@ function subtractInputBox() {
 						<td width="53">학급</td>
 					</tr>
 				</tbody>
-			</table>			
-		</form>
+			</table>
 		<input type="button" value="추가" onclick="javascript:addInputBox();"> 
 		<input type="button" value="삭제" onclick="javascript:subtractInputBox();">
-		<input type="button" value="전송" onclick="location.href='new1.php'";>
-
-	
+		<input type="submit" value="전송">			
+		</form>
 		 </div>
          
 		 
 		 <div id="header_3">
-		 row 데이터 게시판 형태로 출력 </div>
+		 row 데이터 게시판 형태로 출력 
+		<form name="showForm" action="student_score_management_program.php" method="post">
+			<input type="submit" value="찾기"><input type="text" name = "find_record">	
+			<table id="show_table" border="1" size = "530">
+				<tbody>
+					<tr>
+						<td width="20" ></th>
+						<td width="100">학번</td>
+						<td width="100">이름</td>
+						<td width="53">언어</td>
+						<td width="53">영어</td>
+						<td width="53">과학</td>
+						<td width="53">사회</td>
+						<td width="53">학급</td>
+					</tr>
+				</tbody>
+			</table>
+		<input type="button" value="추가" onclick="javascript:addInputBox();"> 
+		<input type="button" value="삭제" onclick="javascript:subtractInputBox();">
+				
+		</form>
+		 </div>
 		 
 	
-		 <?php
+<?php
 	$servername = "localhost";
 	$username = "root";
 	$password = "kjs68770!";
     
 	$dateStemp=  date("Y/m/d D A h:i:s");
 	
-try {
+	try {
     //$conn = new PDO("mysql:host=$servername;dbname=blueone", $username, $password);
     // set the PDO error mode to exception
     //$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
 	$conn = mysqli_connect($servername,$username,$password);
     
  	if($conn){
-	
-    mysqli_select_db($conn,"blueone");	
-   	$result = mysqli_query($conn,"	
-	select     student_number,
-		         student_name,
-	             avg(student_language),
-	             avg(student_english),
-	            avg(student_science),
+		mysqli_select_db($conn,"blueone");	
+		
+		$size = count($_POST['ST_NUMBER']);
+		$Student_NUMBER = $_POST['ST_NUMBER'];
+		$Student_NAME = $_POST['ST_NAME'];
+		$Student_LANG = $_POST['ST_LANG_SCORE'];
+		$Student_ENG = $_POST['ST_ENG_SCORE'];
+		$Student_SCIEN = $_POST['ST_SCIEN_SCORE'];
+		$Student_SOCIE = $_POST['ST_SOCIE_SCORE'];
+		$Student_CLASS = $_POST['ST_CLAS_NAME']; 	
+			
+		for($i = 0; $i < $size; $i++){
+			$sql = "insert into student_score_table(student_number, student_name,student_language,student_english,student_science,student_society,student_class) value($Student_NUMBER[$i],'$Student_NAME[$i]',$Student_LANG[$i],$Student_ENG[$i],$Student_SCIEN[$i],$Student_SOCIE[$i],'$Student_CLASS[$i]');";
+			$result = mysqli_query($conn,$sql);
+			if($size > 0){
+				if($result){
+					echo "쿼리성공";
+				}
+				else {
+					echo "쿼리실패";
+					echo $size;
+					echo $sql;
+					$error = mysql_error($conn);
+					echo $error;
+				}
+			}
+		}
+		$result = mysqli_query($conn,"	
+		select  student_number,
+		        student_name,
+	            avg(student_language),
+	            avg(student_english),
+				avg(student_science),
 	            avg(student_society),
 	            student_class
-              from student_score_table
-             group by student_class
-");
+				from student_score_table
+				group by student_class
+	");
 
    	$grade_result = mysqli_query($conn,"	
-    SELECT student_number,
-	         student_name,
-             student_class,
-             (student_language + student_english + student_science + student_society)/4 as score_average
-            FROM blueone.student_score_table
-            order by (student_language + student_english + student_science + student_society)/4 desc
-");
+		SELECT student_number,
+				student_name,
+				student_class,
+				(student_language + student_english + student_science + student_society)/4 as score_average
+				FROM blueone.student_score_table
+				order by (student_language + student_english + student_science + student_society)/4 desc
+		");
 
 
 
    	$class_avg_result = mysqli_query($conn,"	
-     SELECT student_class,
+       SELECT student_class,
        sum((student_language + student_english + student_science + student_society)/4 )as score_average
        FROM blueone.student_score_table
        group by student_class
-       order by (student_language + student_english + student_science + student_society)/4 desc 
+       order by sum((student_language + student_english + student_science + student_society)/4 ) desc 
 
 	  ");
 
@@ -241,7 +278,9 @@ try {
 	
 		 $school_lack_result = mysqli_query($conn,"	
    
-   select      case
+     
+	 
+	     	select      case
 			       when (
                  FIELD(  LEAST(    
 	             floor(avg(student_language) ),
@@ -297,15 +336,22 @@ try {
                  
                  ) = 4 
                  then '사회'
+                 
                  else 
                   '못찾음'
-                 end as lack_class ,student_class
-   					from student_score_table
+                       
+                 
+                 end as lack_class , student_class
+                 
+					from student_score_table
 				    group by student_class
 	 
+	 
+	 
+	 
+	 
 	 ");
-	
-		$to_encode = array();
+	$to_encode = array();
 	$i = 0;
 	// 쿼리 결과물 의 리스트 패치 루프 문  start *****
 	while ($row = mysqli_fetch_array($result) ) {
@@ -317,7 +363,8 @@ try {
 		$student_science[$i]      = $row['avg(student_science)']; 
 		$student_society[$i]      = $row['avg(student_society)']; 
 		$student_class[$i]         = $row['student_class']; 
-		 		 
+		 
+		 
 		 //echo $row['avg(student_language)'];
 		 
 		  //		  echo $student_number[$i];
@@ -357,8 +404,8 @@ try {
          ++$t ;		  
 	}
 	
+	
 		$u = 0;
-
 		while ($school_avg_row = mysqli_fetch_array($school_avg_result) ) {
 		
 		 $student_language_rank[$u]          = $school_avg_row['avg(student_language)']; 
@@ -366,9 +413,11 @@ try {
 		 $student_science_rank[$u]             = $school_avg_row['avg(student_science)']; 
 		 $student_society_rank[$u]              = $school_avg_row['avg(student_society)']; 
 
-		 // echo "<br>";	
 
-     	}
+        // echo "<br>";	
+
+     
+	}
 	
 		$v = 0;
 		while ($school_lack_row = mysqli_fetch_array($school_lack_result) ) {
@@ -380,6 +429,7 @@ try {
 
 		++$v ;	
   	}
+	
 	// 쿼리 결과물 의 리스트 패치 루프 문  end *****
 	//echo json_encode($to_encode);
 	
@@ -541,7 +591,10 @@ catch(PDOException $e)
      	<div id="header_5">
 	   
 	     <div id="header_5_left_chart_class_average">
-		    		  
+		    
+		  
+		  
+		  
 <div id="container" style="width: 550px; height: 400px; margin: 0 auto"></div>
 <script language="JavaScript">
 function drawChart() {
@@ -571,11 +624,19 @@ function drawChart() {
 }
 google.charts.setOnLoadCallback(drawChart);
 </script> 
-		  	 </div>
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+			
+		 </div>
 	
 	   <div id="header_5_right_chart_class_average">
 	     
-		 반별로 어떤 과목이 부족한지 분석<br>
+			 반별로 어떤 과목이 부족한지 분석<br>
 		 
 		 <table>
 		 <tr>
@@ -600,8 +661,10 @@ google.charts.setOnLoadCallback(drawChart);
 		}	
 		?>
 		 </table>
-		    </div>
+		 
+	    </div>
 	
+
 	     </div>
 </body>
 
