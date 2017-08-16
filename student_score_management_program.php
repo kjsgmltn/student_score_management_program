@@ -128,7 +128,7 @@ function showtable(){
 <body>
 
   <!--
-    테이블로 작성
+    테이블로 작성 (깃 테스트 입니다)
     <table border="1" width="100%">
         <tr>
             <td colspan="3">Navigator</td>
