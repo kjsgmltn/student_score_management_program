@@ -1303,7 +1303,31 @@ google.charts.setOnLoadCallback(drawChart);
 	
 	   <div id="header_5_right_chart_class_average">
 	     
-		 반별로 어떤 과목이 부족한지 분석
+		 반별로 어떤 과목이 부족한지 분석<br>
+		 
+		 <table>
+		 <tr>
+		 <td>
+		 클래스
+		 </td>
+		 <td>
+		 제일 부족한 과목
+		 </td>
+		 
+		 <?php
+		for ($j = 0; $j < $v; $j++  ){
+		?>
+		<tr>
+		
+        <td><?=$student_class[$j]?>  반 </td>
+		<td><?=$lack_class[$j]?></td>
+		
+		</tr>
+		
+		<?php
+		}	
+		?>
+		 </table>
 		 
 	    </div>
 	
