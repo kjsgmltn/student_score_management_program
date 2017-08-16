@@ -127,7 +127,11 @@ function showtable(){
  <h2>학생 시험 평가 관리 프로그램</h2>
 <body>
 
+<<<<<<< HEAD
   <!-- 깃 다루기 연습
+=======
+  <!--
+>>>>>>> 7749d14ef6199d8caa8bf53dc0e0415ceb780ebd
     테이블로 작성
     <table border="1" width="100%">
         <tr>
