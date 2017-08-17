@@ -175,7 +175,7 @@ function subtractInputBox() {
 		 <div id="header_3">
 		 row 데이터 게시판 형태로 출력 
 		<form name="showForm" action="student_score_management_program.php" method="post">
-			<input type="submit" value="찾기"><input type="text" name = "find_record">	
+			<input type="submit" value="찾기"><input type="text" name = "find_record" method = "post">	
 			<table id="show_table" border="1" size = "530">
 				<tbody>
 					<tr>
@@ -190,38 +190,44 @@ function subtractInputBox() {
 					</tr>
 					<?php
 						$i = 0;
-						$result = mysqli_query($conn,"select student_number, student_name, student_language, student_english, student_science, student_society, student_class from blueone.student_score_table;");
+						$find_element = $_POST["find_record"];
 						if($conn){
-							while($text = mysqli_fetch_array($result)){
-								$number[$i] = $text['student_number'];
-								$name[$i] = $text['student_name'];
-								$lang[$i] = $text['student_language'];
-								$eng[$i] = $text['student_english'];
-								$sci[$i] = $text['student_science'];
-								$soc[$i] = $text['student_society'];
-								$class[$i] = $text['student_class'];
-								$table_Str = "<tr>
-								<td><input type = checkbox name = CHECK></td>
-								<td><output type = text name = ST_NUMBER[] size = 10>".$number[$i]."</td>
-								<td><output type = text name = ST_NAME[] size = 10>".$name[$i]."</td>
-								<td><output type = text name = ST_LANG_SCORE[] size = 3>".$lang[$i]."</td>
-								<td><output type = text name = ST_ENG_SCORE[] size = 3>".$eng[$i]."</td>
-								<td><output type = text name = ST_SCIEN_SCORE[] size = 3>".$sci[$i]."</td>
-								<td><output type = text name = ST_SOCIE_SCORE[] size = 3>".$soc[$i]."</td>
-								<td><output type = text name = ST_CLAS_NAME[] size = 3>".$class[$i]."</td>
-								</tr>";
-								
-								echo $table_Str;
-								$i++;
+							if(!$find_element){
+								$result = mysqli_query($conn,"select student_number, student_name, student_language, student_english, student_science, student_society, student_class from blueone.student_score_table;");
 							}
-						}
+							else if($find_element){
+								$find_qury = "select student_number, student_name, student_language, student_english, student_science, student_society, student_class from student_score_table where student_number=".$find_element.";";
+								echo $find_qury;
+								$result = mysqli_query($conn,$find_qury);
+							}
 						else{
 							echo "fail";
+						}
+							while($text = mysqli_fetch_array($result)){
+									$number[$i] = $text['student_number'];
+									$name[$i] = $text['student_name'];
+									$lang[$i] = $text['student_language'];
+									$eng[$i] = $text['student_english'];
+									$sci[$i] = $text['student_science'];
+									$soc[$i] = $text['student_society'];
+									$class[$i] = $text['student_class'];
+									$table_Str = "<tr>
+										<td><input type = checkbox name = CHECK></td>
+										<td><output type = text name = ST_NUMBER[] size = 10>".$number[$i]."</td>
+										<td><output type = text name = ST_NAME[] size = 10>".$name[$i]."</td>
+										<td><output type = text name = ST_LANG_SCORE[] size = 3>".$lang[$i]."</td>
+										<td><output type = text name = ST_ENG_SCORE[] size = 3>".$eng[$i]."</td>
+										<td><output type = text name = ST_SCIEN_SCORE[] size = 3>".$sci[$i]."</td>
+										<td><output type = text name = ST_SOCIE_SCORE[] size = 3>".$soc[$i]."</td>
+										<td><output type = text name = ST_CLAS_NAME[] size = 3>".$class[$i]."</td>
+									</tr>";
+									echo $table_Str;
+									$i++;
+							}
 						}
 					?>
 				</tbody>
 			</table>
-		<input type="button" value="추가" onclick="javascript:addInputBox();"> 
 		<input type="button" value="삭제" onclick="javascript:subtractInputBox();">
 				
 		</form>
