@@ -193,17 +193,17 @@ function subtractInputBox() {
 						$find_element = $_POST["find_record"];
 						if($conn){
 							if(!$find_element){
-								$result = mysqli_query($conn,"select student_number, student_name, student_language, student_english, student_science, student_society, student_class from blueone.student_score_table;");
+																$result1 = mysqli_query($conn,"select student_number, student_name, student_language, student_english, student_science, student_society, student_class from blueone.student_score_table;");
+								echo $sql;
+								
 							}
 							else if($find_element){
-								$find_qury = "select student_number, student_name, student_language, student_english, student_science, student_society, student_class from student_score_table where student_number=".$find_element.";";
-								echo $find_qury;
-								$result = mysqli_query($conn,$find_qury);
+								$result1 = mysqli_query($conn,"select student_number, student_name, student_language, student_english, student_science, student_society, student_class from blueone.student_score_table where student_number = $find_element;");
 							}
 						else{
 							echo "fail";
 						}
-							while($text = mysqli_fetch_array($result)){
+							while($text = mysqli_fetch_array($result1)){
 									$number[$i] = $text['student_number'];
 									$name[$i] = $text['student_name'];
 									$lang[$i] = $text['student_language'];
